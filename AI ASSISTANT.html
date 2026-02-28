@@ -131,20 +131,6 @@
       startBtn.addEventListener("click", () => {
         startScreen.style.display = "none";
 
-        const intro = document.createElement("video");
-        intro.id = "intro-video";
-        intro.src = "v3.mp4"; // replace with your intro video file
-        intro.autoplay = true;
-        intro.muted = false;
-        intro.playsInline = true;
-        intro.style.position = "fixed";
-        intro.style.inset = "0";
-        intro.style.width = "100%";
-        intro.style.height = "100%";
-        intro.style.objectFit = "cover";
-        intro.style.zIndex = "50";
-        document.body.appendChild(intro);
-
         const skipBtn = document.createElement("button");
         skipBtn.className = "intro-skip-btn";
         skipBtn.textContent = "Skip";
@@ -213,3 +199,4 @@
   <script src="AI ASSISTANT.js"></script>
 </body>
 </html>
+
