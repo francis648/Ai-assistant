@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Assistant</title>
+  <link rel="stylesheet" href="AI ASSISTANT.css">
+  <style>
+    /* Basic styles for auth and slideshow */
+    #auth-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .auth-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    .auth-error { color: red; margin-top: 10px; }
+    .slides { display: none; }
+    .slides.active { display: block; }
+    .intro-skip-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 200;
+      padding: 10px 20px;
+      background: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Launch Screen -->
+  <div id="start-screen">
+    <button id="start-btn">Click Me to Open</button>
+  </div>
+
+  <!-- Authentication Modal -->
+  <div id="auth-screen" aria-hidden="true">
+    <div class="auth-box" role="dialog" aria-labelledby="auth-title" aria-modal="true">
+      <h2 id="auth-title">Please sign in</h2>
+
+      <label for="username">Username</label>
+      <input id="username" type="text" autocomplete="username" placeholder="Enter username" />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Enter password" />
+
+      <div class="auth-error" id="auth-error" aria-live="polite"></div>
+
+      <div class="auth-actions">
+        <button id="login-btn">Login</button>
+        <button id="cancel-auth">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Study Assistant Content (hidden until login succeeds) -->
+  <div id="main-content" style="display: none;">
+    <header>WELCOME TO OUR AI STUDY ASSISTANT</header>
+
+    <!-- Chatbot -->
+    <div class="chat-container">
+      <h2>Gemini Chatbot</h2>
+      <div id="chat-box" class="chat-box">
+        <p><strong>Bot:</strong> Hello! How can I help you study today?</p>
+      </div>
+      <div class="input-area">
+        <input type="text" id="user-input" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+    
+    <!-- Timetable Form -->
+    <main>
+      <h2>Create Your Exam Timetable</h2>
+      <form id="timetableForm">
+        <label for="course">Course Name:</label>
+        <input type="text" id="course" name="course" required>
+
+        <label for="unit">Unit:</label>
+        <input type="text" id="unit" name="unit" required>
+
+        <label for="time">Preferred Study Time:</label>
+        <input type="text" id="time" name="time" placeholder="e.g. Morning, Evening" required>
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <h2>Your AI-Generated Timetable</h2>
+      <table id="timetable">
+        <tr>
+          <th>Course</th>
+          <th>Unit</th>
+          <th>Scheduled Time</th>
+        </tr>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Preset credentials
+      const PRESET_USER = "francis";
+      const PRESET_PASS = "12345";
+
+      // Elements
+      const startBtn = document.getElementById("start-btn");
+      const startScreen = document.getElementById("start-screen");
+      const authScreen = document.getElementById("auth-screen");
+      const mainContent = document.getElementById("main-content");
+      const loginBtn = document.getElementById("login-btn");
+      const cancelAuth = document.getElementById("cancel-auth");
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
+      const authError = document.getElementById("auth-error");
+
+      // Start button: play intro video, then show auth
+      startBtn.addEventListener("click", () => {
+        startScreen.style.display = "none";
+
+        const intro = document.createElement("video");
+        intro.id = "intro-video";
+        intro.src = "v3.mp4"; // replace with your intro video file
+        intro.autoplay = true;
+        intro.muted = false;
+        intro.playsInline = true;
+        intro.style.position = "fixed";
+        intro.style.inset = "0";
+        intro.style.width = "100%";
+        intro.style.height = "100%";
+        intro.style.objectFit = "cover";
+        intro.style.zIndex = "50";
+        document.body.appendChild(intro);
+
+        const skipBtn = document.createElement("button");
+        skipBtn.className = "intro-skip-btn";
+        skipBtn.textContent = "Skip";
+        document.body.appendChild(skipBtn);
+
+        intro.play().catch(err => console.warn("Intro play blocked:", err));
+
+        function finishIntro() {
+          try { intro.pause(); } catch(e) {}
+          if (intro.parentNode) intro.parentNode.removeChild(intro);
+          if (skipBtn.parentNode) skipBtn.parentNode.removeChild(skipBtn);
+          authScreen.style.display = "flex";
+          authScreen.setAttribute("aria-hidden", "false");
+          setTimeout(() => usernameInput.focus(), 100);
+        }
+
+        intro.addEventListener("ended", finishIntro);
+        skipBtn.addEventListener("click", finishIntro);
+        intro.addEventListener("error", () => setTimeout(finishIntro, 600));
+      });
+
+      // Cancel authentication
+      cancelAuth.addEventListener("click", () => {
+        authScreen.style.display = "none";
+        authScreen.setAttribute("aria-hidden", "true");
+        startScreen.style.display = "flex";
+        authError.textContent = "";
+        usernameInput.value = "";
+        passwordInput.value = "";
+      });
+
+      // Login check
+      function performLogin() {
+        authError.textContent = "";
+        const user = (usernameInput.value || "").trim();
+        const pass = passwordInput.value || "";
+
+        if (!user || !pass) {
+          authError.textContent = "Please enter both username and password.";
+          return;
+        }
+
+        if (user === PRESET_USER && pass === PRESET_PASS) {
+          authError.textContent = "";
+          authScreen.style.display = "none";
+          authScreen.setAttribute("aria-hidden", "true");
+          mainContent.style.display = "block";
+        } else {
+          authError.textContent = "Invalid username or password.";
+          passwordInput.value = "";
+          passwordInput.focus();
+        }
+      }
+
+      loginBtn.addEventListener("click", performLogin);
+      [usernameInput, passwordInput].forEach(input => {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") performLogin();
+        });
+      });
+
+      mainContent.style.display = "none";
+    });
+  </script>
+
+  <script src="AI ASSISTANT.js"></script>
+</body>
+</html>
