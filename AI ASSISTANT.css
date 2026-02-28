@@ -1,0 +1,186 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #123;
+  margin: 0;
+  padding: 0;
+  color: #333333;
+}
+
+/* Modern wavy header */
+header {
+  background: linear-gradient(135deg, #2c3e50, #3498db);
+  color: white;
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 2rem;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Main content card */
+main {
+  max-width: 900px;
+  margin: 140px auto 2rem auto;
+  margin-right: 340px; /* space for chatbot */
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  color: #2c3e50;
+  margin-top: 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+}
+
+/* Form styling */
+form {
+  margin-top: 1rem;
+}
+
+label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border 0.3s ease;
+}
+
+input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Modern buttons */
+button {
+  margin-top: 1rem;
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #3498db, #2ecc71);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Stylish table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th {
+  background: linear-gradient(135deg, #3498db, #2ecc71);
+  color: white;
+  padding: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+td {
+  padding: 0.8rem;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #f4f9fc;
+}
+
+tr:hover {
+  background-color: #eaf6ff;
+}
+
+/* Chatbot panel */
+.chat-container {
+  width: 320px;
+  background: #ffffff;
+  border-left: 3px solid #3498db;
+  padding: 1rem;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+  position: fixed;
+  right: 0;
+  top: 100px;
+  bottom: 0;
+  overflow-y: auto;
+  border-radius: 12px 0 0 12px;
+}
+
+.chat-container h2 {
+  margin-top: 0;
+  color: #3498db;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.chat-box {
+  height: calc(100% - 100px);
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, #f9f9f9, #f0faff);
+}
+
+.input-area {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.input-area input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.input-area button {
+  padding: 0.5rem 1rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.input-area button:hover {
+  background: #2980b9;
+}
+
